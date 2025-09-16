@@ -2,95 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Travel Saviours Design System - Beautiful colors, gradients, and animations */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Travel-inspired color palette */
+    --background: 248 250 252; /* light slate */
+    --foreground: 215 28% 17%; /* dark slate */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 255 255 255;
+    --card-foreground: 215 28% 17%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 255 255 255;
+    --popover-foreground: 215 28% 17%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Travel theme colors */
+    --primary: 199 89% 48%; /* travel blue */
+    --primary-foreground: 255 255 255;
+    --primary-dark: 199 89% 35%;
+    --primary-light: 199 89% 60%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 142 76% 36%; /* nature green */
+    --secondary-foreground: 255 255 255;
+    --secondary-light: 142 76% 45%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 45 93% 47%; /* warm orange */
+    --accent-foreground: 255 255 255;
+    --accent-light: 45 93% 60%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Emergency colors */
+    --emergency: 0 84% 60%; /* emergency red */
+    --emergency-foreground: 255 255 255;
+    --emergency-light: 0 84% 70%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --success: 142 76% 36%; /* success green */
+    --success-foreground: 255 255 255;
 
-    --radius: 0.5rem;
+    --warning: 38 92% 50%; /* warning yellow */
+    --warning-foreground: 255 255 255;
 
-    --sidebar-background: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 255 255 255;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 199 89% 48%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --radius: 0.75rem;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
+    --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(var(--emergency-light)));
+    --gradient-travel: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-safety: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)));
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    /* Shadows */
+    --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-medium: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-large: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-emergency: 0 10px 15px -3px hsl(var(--emergency) / 0.2);
+    --shadow-primary: 0 10px 15px -3px hsl(var(--primary) / 0.2);
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 47% 11%; /* dark blue */
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 224 71% 4%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 224 71% 4%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 199 89% 60%; /* lighter blue for dark mode */
+    --primary-foreground: 222 47% 11%;
+    --primary-dark: 199 89% 45%;
+    --primary-light: 199 89% 75%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 142 76% 45%; /* lighter green */
+    --secondary-foreground: 222 47% 11%;
+    --secondary-light: 142 76% 55%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 45 93% 55%; /* lighter orange */
+    --accent-foreground: 222 47% 11%;
+    --accent-light: 45 93% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 11% 65%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --emergency: 0 84% 65%;
+    --emergency-foreground: 222 47% 11%;
+    --emergency-light: 0 84% 75%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --success: 142 76% 45%;
+    --success-foreground: 222 47% 11%;
+
+    --warning: 38 92% 60%;
+    --warning-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 222 47% 11%;
+
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 199 89% 60%;
   }
 }
 
@@ -100,6 +125,131 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Button variants */
+  .btn-travel {
+    @apply bg-gradient-to-r from-primary to-accent text-white font-semibold rounded-xl px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300;
+  }
+
+  .btn-emergency {
+    @apply bg-gradient-to-r from-emergency to-emergency-light text-white font-bold rounded-full px-8 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 animate-pulse;
+  }
+
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary to-secondary-light text-white font-semibold rounded-xl px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300;
+  }
+
+  /* Card variants */
+  .card-glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg;
+  }
+
+  .card-travel {
+    @apply bg-gradient-to-br from-white to-primary/5 border border-primary/10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+
+  .card-feature {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:border-primary/20 transition-all duration-300 transform hover:-translate-y-1;
+  }
+
+  /* Navigation styles */
+  .nav-item {
+    @apply flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 hover:bg-primary/10;
+  }
+
+  .nav-item.active {
+    @apply bg-gradient-to-br from-primary/20 to-accent/20 text-primary;
+  }
+
+  /* Text gradients */
+  .text-gradient-travel {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .text-gradient-hero {
+    @apply bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent;
+  }
+
+  /* Emergency pulse animation */
+  .emergency-pulse {
+    @apply animate-pulse bg-gradient-to-r from-emergency to-emergency-light;
+  }
+
+  /* Floating action button */
+  .fab {
+    @apply fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-xl flex items-center justify-center transform hover:scale-110 transition-all duration-300 z-50;
+  }
+
+  .fab-emergency {
+    @apply fab bg-gradient-to-r from-emergency to-emergency-light text-white animate-pulse;
+  }
+}
+
+@layer utilities {
+  /* Custom animations */
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes bounceIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
