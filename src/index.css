@@ -41,7 +41,7 @@
     --success: 142 76% 36%; /* success green */
     --success-foreground: 255 255 255;
 
-    --warning: 38 92% 50%; /* warning yellow */
+    --warning: 40 70% 70%; /* soft peach warning */
     --warning-foreground: 255 255 255;
 
     --destructive: 0 84% 60%;
@@ -107,7 +107,7 @@
     --success: 142 76% 45%;
     --success-foreground: 222 47% 11%;
 
-    --warning: 38 92% 60%;
+    --warning: 40 70% 75%; /* lighter peach for dark mode */
     --warning-foreground: 222 47% 11%;
 
     --destructive: 0 84% 65%;

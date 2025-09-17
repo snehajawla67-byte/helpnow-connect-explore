@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Search, Navigation, Plus, Phone, Star, Clock } from 'lucide-react';
+import { MapPin, Search, Navigation, Plus, Phone, Star, Clock, Car, Home, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -91,16 +91,49 @@ const MapPage = () => {
       phone: '+91 9876543214',
       isOpen: true,
     },
+    {
+      id: '7',
+      name: 'City Taxi Service',
+      type: 'vehicle',
+      distance: '0.2 km',
+      rating: 4.4,
+      address: 'Main Road Taxi Stand',
+      phone: '+91 9876543215',
+      isOpen: true,
+    },
+    {
+      id: '8',
+      name: 'Local Family Homestay',
+      type: 'home',
+      distance: '0.6 km',
+      rating: 4.9,
+      address: 'Residential Area, Block A',
+      phone: '+91 9876543216',
+      isOpen: true,
+    },
+    {
+      id: '9',
+      name: 'Safety Shelter Center',
+      type: 'safety',
+      distance: '0.9 km',
+      rating: 4.1,
+      address: 'Emergency Services Complex',
+      phone: '112',
+      isOpen: true,
+    },
   ]);
 
   const categories = [
     { id: 'all', label: 'All Places', icon: MapPin },
     { id: 'hospital', label: t('hospitals'), icon: Plus },
-    { id: 'police', label: t('policeStations'), icon: Star },
+    { id: 'police', label: t('policeStations'), icon: Shield },
     { id: 'hotel', label: t('hotels'), icon: MapPin },
     { id: 'restaurant', label: t('restaurants'), icon: Star },
     { id: 'travel', label: t('travelAgencies'), icon: Navigation },
     { id: 'guide', label: t('touristGuides'), icon: Star },
+    { id: 'vehicle', label: 'Travel Vehicles', icon: Car },
+    { id: 'home', label: 'Local Homes', icon: Home },
+    { id: 'safety', label: 'Safety Places', icon: Shield },
   ];
 
   useEffect(() => {
@@ -206,6 +239,9 @@ const MapPage = () => {
                     <option value="restaurant">Restaurant</option>
                     <option value="travel">Travel Agency</option>
                     <option value="guide">Tourist Guide</option>
+                    <option value="vehicle">Travel Vehicle</option>
+                    <option value="home">Local Home</option>
+                    <option value="safety">Safety Place</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -238,7 +274,7 @@ const MapPage = () => {
       {/* Category Tabs */}
       <div className="px-4 mb-6">
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="grid grid-cols-4 lg:grid-cols-7 mb-4 h-auto">
+          <TabsList className="grid grid-cols-5 lg:grid-cols-10 mb-4 h-auto">
             {categories.map((category) => (
               <TabsTrigger
                 key={category.id}
@@ -294,7 +330,7 @@ const MapPage = () => {
                       <span className="text-sm text-muted-foreground">{place.distance}</span>
                       {place.rating > 0 && (
                         <div className="flex items-center">
-                          <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                          <Star className="h-3 w-3 text-warning fill-current" />
                           <span className="text-xs ml-1">{place.rating}</span>
                         </div>
                       )}
