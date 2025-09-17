@@ -104,10 +104,12 @@ const SOSButton = () => {
   return (
     <Button
       onClick={activateSOS}
-      className="fab-emergency"
+      variant="ghost"
+      size="sm"
+      className="p-2 text-emergency hover:bg-emergency/10 animate-pulse-emergency"
       title="Emergency SOS"
     >
-      <AlertTriangle className="h-8 w-8" />
+      <AlertTriangle className="h-5 w-5" />
     </Button>
   );
 };

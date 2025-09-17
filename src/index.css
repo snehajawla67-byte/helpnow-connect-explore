@@ -16,19 +16,19 @@
     --popover: 255 255 255;
     --popover-foreground: 215 28% 17%;
 
-    /* Travel theme colors */
-    --primary: 199 89% 48%; /* travel blue */
+    /* Travel theme colors - Pastel palette */
+    --primary: 210 70% 65%; /* soft blue */
     --primary-foreground: 255 255 255;
-    --primary-dark: 199 89% 35%;
-    --primary-light: 199 89% 60%;
+    --primary-dark: 210 70% 50%;
+    --primary-light: 210 70% 80%;
 
-    --secondary: 142 76% 36%; /* nature green */
+    --secondary: 160 60% 55%; /* soft mint green */
     --secondary-foreground: 255 255 255;
-    --secondary-light: 142 76% 45%;
+    --secondary-light: 160 60% 70%;
 
-    --accent: 45 93% 47%; /* warm orange */
+    --accent: 330 60% 70%; /* soft rose */
     --accent-foreground: 255 255 255;
-    --accent-light: 45 93% 60%;
+    --accent-light: 330 60% 80%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 215 16% 47%;

@@ -8,7 +8,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import Navigation from "@/components/layout/Navigation";
-import SOSButton from "@/components/sos/SOSButton";
 import Home from "@/pages/Home";
 import MapPage from "@/pages/MapPage";
 import Friends from "@/pages/Friends";
@@ -39,7 +38,6 @@ const App = () => (
                 </main>
 
                 <Navigation />
-                <SOSButton />
                 
                 <Toaster />
                 <Sonner />

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import SOSButton from '@/components/sos/SOSButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,9 @@ const Header = () => {
         </div>
 
         <div className="flex items-center space-x-2">
+          {/* Emergency SOS Button */}
+          <SOSButton />
+          
           {/* Language Toggle */}
           <Button
             variant="ghost"
