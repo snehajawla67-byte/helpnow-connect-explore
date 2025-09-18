@@ -14,6 +14,177 @@ export type Database = {
   }
   public: {
     Tables: {
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          is_primary: boolean | null
+          name: string
+          phone: string
+          relationship: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          name: string
+          phone: string
+          relationship?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          name?: string
+          phone?: string
+          relationship?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      incident_reports: {
+        Row: {
+          description: string | null
+          id: string
+          incident_type: string
+          latitude: number
+          longitude: number
+          reported_at: string
+          reporter_id: string | null
+          resolved_at: string | null
+          severity: number | null
+          status: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          incident_type: string
+          latitude: number
+          longitude: number
+          reported_at?: string
+          reporter_id?: string | null
+          resolved_at?: string | null
+          severity?: number | null
+          status?: string | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          incident_type?: string
+          latitude?: number
+          longitude?: number
+          reported_at?: string
+          reporter_id?: string | null
+          resolved_at?: string | null
+          severity?: number | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      places: {
+        Row: {
+          address: string | null
+          amenities: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          is_open: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          opening_hours: Json | null
+          phone: string | null
+          rating: number | null
+          type: string
+          updated_at: string
+          verified: boolean | null
+        }
+        Insert: {
+          address?: string | null
+          amenities?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_open?: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          opening_hours?: Json | null
+          phone?: string | null
+          rating?: number | null
+          type: string
+          updated_at?: string
+          verified?: boolean | null
+        }
+        Update: {
+          address?: string | null
+          amenities?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_open?: boolean | null
+          latitude?: number
+          longitude?: number
+          name?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          rating?: number | null
+          type?: string
+          updated_at?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      safety_zones: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          radius_meters: number
+          risk_level: number | null
+          updated_at: string
+          verified: boolean | null
+          zone_type: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          radius_meters?: number
+          risk_level?: number | null
+          updated_at?: string
+          verified?: boolean | null
+          zone_type: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          radius_meters?: number
+          risk_level?: number | null
+          updated_at?: string
+          verified?: boolean | null
+          zone_type?: string
+        }
+        Relationships: []
+      }
       Travel: {
         Row: {
           Sneha: number
@@ -29,12 +200,115 @@ export type Database = {
         }
         Relationships: []
       }
+      user_locations: {
+        Row: {
+          accuracy_meters: number | null
+          address: string | null
+          id: string
+          is_emergency: boolean | null
+          latitude: number
+          longitude: number
+          timestamp: string
+          user_id: string | null
+        }
+        Insert: {
+          accuracy_meters?: number | null
+          address?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          latitude: number
+          longitude: number
+          timestamp?: string
+          user_id?: string | null
+        }
+        Update: {
+          accuracy_meters?: number | null
+          address?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          latitude?: number
+          longitude?: number
+          timestamp?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_media: {
+        Row: {
+          caption: string | null
+          created_at: string
+          file_path: string
+          id: string
+          is_emergency: boolean | null
+          is_public: boolean | null
+          latitude: number | null
+          longitude: number | null
+          media_type: string
+          user_id: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          file_path: string
+          id?: string
+          is_emergency?: boolean | null
+          is_public?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          media_type: string
+          user_id?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          file_path?: string
+          id?: string
+          is_emergency?: boolean | null
+          is_public?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          media_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_distance: {
+        Args: { lat1: number; lat2: number; lon1: number; lon2: number }
+        Returns: number
+      }
+      check_area_safety: {
+        Args: { check_lat: number; check_lon: number; radius_meters?: number }
+        Returns: {
+          overall_safety_score: number
+          recent_incidents: Json
+          risk_zones: Json
+        }[]
+      }
+      get_nearby_places: {
+        Args: {
+          place_type?: string
+          radius_meters?: number
+          user_lat: number
+          user_lon: number
+        }
+        Returns: {
+          address: string
+          distance_meters: number
+          id: string
+          is_open: boolean
+          latitude: number
+          longitude: number
+          name: string
+          phone: string
+          rating: number
+          type: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
