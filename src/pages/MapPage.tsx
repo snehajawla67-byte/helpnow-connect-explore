@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Search, Navigation, Plus, Phone, Star, Clock, Car, Home, Shield } from 'lucide-react';
+import { MapPin, Search, Navigation, Plus, Phone, Star, Clock, Car, Home, Shield, Camera, AlertTriangle, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,120 +8,48 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLocation } from '@/hooks/useLocation';
+import { useNearbyPlaces, type Place as PlaceType } from '@/hooks/useNearbyPlaces';
+import CameraCapture from '@/components/camera/CameraCapture';
+import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 
-interface Place {
-  id: string;
-  name: string;
-  type: string;
-  distance: string;
-  rating: number;
-  address: string;
-  phone?: string;
-  isOpen: boolean;
+// Using the PlaceType from the hook, maintaining is_open naming convention
+interface Place extends PlaceType {
+  distance: string; // We'll format the distance_meters as string
 }
 
 const MapPage = () => {
   const { t } = useLanguage();
-  const [currentLocation, setCurrentLocation] = useState<string>('Getting location...');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showAddPlace, setShowAddPlace] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const [newPlace, setNewPlace] = useState({ name: '', type: '', phone: '', address: '' });
+  
+  // Real backend hooks
+  const { 
+    currentLocation, 
+    isLoading: locationLoading, 
+    getCurrentLocation, 
+    safetyData 
+  } = useLocation();
+  
+  const {
+    places: backendPlaces,
+    safetyInfo,
+    isLoading: placesLoading,
+    fetchNearbyPlaces,
+    addPlace,
+    getDirections,
+    formatDistance
+  } = useNearbyPlaces();
 
-  // Mock places data
-  const [places, setPlaces] = useState<Place[]>([
-    {
-      id: '1',
-      name: 'City Hospital',
-      type: 'hospital',
-      distance: '0.5 km',
-      rating: 4.5,
-      address: 'Main Street, Downtown',
-      phone: '+91 9876543210',
-      isOpen: true,
-    },
-    {
-      id: '2',
-      name: 'Police Station Central',
-      type: 'police',
-      distance: '0.8 km',
-      rating: 4.2,
-      address: 'Government Square',
-      phone: '100',
-      isOpen: true,
-    },
-    {
-      id: '3',
-      name: 'Grand Hotel',
-      type: 'hotel',
-      distance: '1.2 km',
-      rating: 4.8,
-      address: 'Tourist District',
-      phone: '+91 9876543211',
-      isOpen: true,
-    },
-    {
-      id: '4',
-      name: 'Spice Garden Restaurant',
-      type: 'restaurant',
-      distance: '0.3 km',
-      rating: 4.6,
-      address: 'Food Street',
-      phone: '+91 9876543212',
-      isOpen: true,
-    },
-    {
-      id: '5',
-      name: 'Travel Experts Agency',
-      type: 'travel',
-      distance: '0.7 km',
-      rating: 4.3,
-      address: 'Business Center',
-      phone: '+91 9876543213',
-      isOpen: false,
-    },
-    {
-      id: '6',
-      name: 'Local Guide Services',
-      type: 'guide',
-      distance: '0.4 km',
-      rating: 4.7,
-      address: 'Tourist Information Center',
-      phone: '+91 9876543214',
-      isOpen: true,
-    },
-    {
-      id: '7',
-      name: 'City Taxi Service',
-      type: 'vehicle',
-      distance: '0.2 km',
-      rating: 4.4,
-      address: 'Main Road Taxi Stand',
-      phone: '+91 9876543215',
-      isOpen: true,
-    },
-    {
-      id: '8',
-      name: 'Local Family Homestay',
-      type: 'home',
-      distance: '0.6 km',
-      rating: 4.9,
-      address: 'Residential Area, Block A',
-      phone: '+91 9876543216',
-      isOpen: true,
-    },
-    {
-      id: '9',
-      name: 'Safety Shelter Center',
-      type: 'safety',
-      distance: '0.9 km',
-      rating: 4.1,
-      address: 'Emergency Services Complex',
-      phone: '112',
-      isOpen: true,
-    },
-  ]);
+  // Convert backend places to local format
+  const places: Place[] = backendPlaces.map(place => ({
+    ...place,
+    distance: formatDistance(place.distance_meters)
+  }));
 
   const categories = [
     { id: 'all', label: 'All Places', icon: MapPin },
@@ -136,13 +64,15 @@ const MapPage = () => {
     { id: 'safety', label: 'Safety Places', icon: Shield },
   ];
 
+  // Fetch nearby places when location is available
   useEffect(() => {
-    // Mock location detection
-    setTimeout(() => {
-      setCurrentLocation('New Delhi, India');
-      toast.success('Location detected successfully!');
-    }, 2000);
-  }, []);
+    if (currentLocation) {
+      fetchNearbyPlaces(currentLocation.latitude, currentLocation.longitude, {
+        radius: 5000,
+        type: selectedCategory === 'all' ? undefined : selectedCategory
+      });
+    }
+  }, [currentLocation, selectedCategory, fetchNearbyPlaces]);
 
   const filteredPlaces = places.filter(place => {
     const matchesCategory = selectedCategory === 'all' || place.type === selectedCategory;
@@ -151,31 +81,56 @@ const MapPage = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const handleAddPlace = () => {
-    if (newPlace.name && newPlace.type) {
-      const place: Place = {
-        id: Date.now().toString(),
+  const handleAddPlace = async () => {
+    if (newPlace.name && newPlace.type && currentLocation) {
+      const success = await addPlace({
         name: newPlace.name,
         type: newPlace.type,
-        distance: '0.1 km',
-        rating: 0,
-        address: newPlace.address || 'User Added Location',
-        phone: newPlace.phone,
-        isOpen: true,
-      };
-      setPlaces([...places, place]);
-      setNewPlace({ name: '', type: '', phone: '', address: '' });
-      setShowAddPlace(false);
-      toast.success('Place added successfully!');
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        address: newPlace.address || undefined,
+        phone: newPlace.phone || undefined
+      });
+      
+      if (success) {
+        setNewPlace({ name: '', type: '', phone: '', address: '' });
+        setShowAddPlace(false);
+      }
     }
   };
 
-  const requestHelp = (place: Place) => {
-    toast.success(`Help request sent to ${place.name}`);
+  const requestHelp = async (place: Place) => {
+    if (!currentLocation) {
+      toast.error('Location not available');
+      return;
+    }
+    
+    try {
+      const response = await supabase.functions.invoke('emergency-services/emergency', {
+        body: {
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          emergency_type: place.type === 'hospital' ? 'medical' : 
+                         place.type === 'police' ? 'police' : 'general',
+          description: `Help requested at ${place.name}`,
+          severity: 3
+        }
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      toast.success(`Emergency services notified! ${response.data?.emergency_response?.emergency_number || 'Help is on the way'}`);
+    } catch (error: any) {
+      console.error('Error requesting help:', error);
+      toast.error('Failed to send help request');
+    }
   };
 
-  const getDirections = (place: Place) => {
-    toast.success(`Getting directions to ${place.name}`);
+  const handleCameraCapture = (mediaData: any) => {
+    console.log('Media captured:', mediaData);
+    toast.success('Photo uploaded successfully!');
   };
 
   return (
@@ -186,8 +141,24 @@ const MapPage = () => {
           <h1 className="text-3xl font-bold text-gradient-travel mb-2">{t('map')}</h1>
           <div className="flex items-center justify-center text-muted-foreground">
             <MapPin className="h-4 w-4 mr-1" />
-            <span className="text-sm">{currentLocation}</span>
+            <span className="text-sm">
+              {locationLoading ? 'Getting location...' : 
+               currentLocation ? currentLocation.address || `${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}` :
+               'Location not available'}
+            </span>
           </div>
+          
+          {/* Safety Score Display */}
+          {safetyInfo && (
+            <div className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+              safetyInfo.overall_safety_score >= 4 ? 'bg-success/20 text-success' :
+              safetyInfo.overall_safety_score >= 3 ? 'bg-warning/20 text-warning' :
+              'bg-emergency/20 text-emergency'
+            }`}>
+              <Shield className="h-3 w-3 mr-1" />
+              Safety Score: {safetyInfo.overall_safety_score}/5
+            </div>
+          )}
         </div>
 
         {/* Search */}
@@ -201,9 +172,20 @@ const MapPage = () => {
           />
         </div>
 
-        {/* Add Place Button */}
-        <div className="flex justify-end mb-4">
-          <Dialog open={showAddPlace} onOpenChange={setShowAddPlace}>
+        {/* Action Buttons */}
+        <div className="flex justify-between items-center mb-4">
+          <Button
+            onClick={() => setShowCamera(true)}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Camera className="h-4 w-4" />
+            Camera
+          </Button>
+          
+          <div className="flex gap-2">
+            <Dialog open={showAddPlace} onOpenChange={setShowAddPlace}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">
                 <Plus className="h-4 w-4 mr-2" />
@@ -267,7 +249,8 @@ const MapPage = () => {
                 </Button>
               </div>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
       </div>
 
@@ -300,11 +283,42 @@ const MapPage = () => {
         </div>
       </div>
 
+      {/* Safety Alerts */}
+      {safetyInfo && safetyInfo.recent_incidents.length > 0 && (
+        <div className="px-4 mb-4">
+          <Card className="border-warning bg-warning/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2 text-warning">
+                <AlertTriangle className="h-4 w-4" />
+                Recent Safety Alerts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-1">
+                {safetyInfo.recent_incidents.slice(0, 3).map((incident, index) => (
+                  <p key={index} className="text-xs text-muted-foreground">
+                    {incident.type} incident • {formatDistance(incident.distance)} away
+                  </p>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Places List */}
       <div className="px-4">
-        <h2 className="text-xl font-bold mb-4">
-          {t('nearbyPlaces')} ({filteredPlaces.length})
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">
+            {t('nearbyPlaces')} ({filteredPlaces.length})
+          </h2>
+          {placesLoading && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              Loading...
+            </div>
+          )}
+        </div>
         
         <div className="space-y-4">
           {filteredPlaces.map((place) => (
@@ -314,7 +328,7 @@ const MapPage = () => {
                   <div className="flex-1">
                     <CardTitle className="text-lg flex items-center gap-2">
                       {place.name}
-                      {place.isOpen ? (
+                      {place.is_open ? (
                         <Badge className="bg-success text-white">Open</Badge>
                       ) : (
                         <Badge variant="secondary">
@@ -396,6 +410,13 @@ const MapPage = () => {
           </div>
         )}
       </div>
+
+      {/* Camera Component */}
+      <CameraCapture
+        isOpen={showCamera}
+        onClose={() => setShowCamera(false)}
+        onCapture={handleCameraCapture}
+      />
     </div>
   );
 };
